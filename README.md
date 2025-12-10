@@ -47,6 +47,10 @@ This project includes preprocessing, deep learning model training, evaluation, a
                        v
             +----------------------+
 
+            |   Docker Deployment |
+            +----------------------+
+
+            
 
 ## 📁 Folder Structure
 churn-platform/
@@ -82,6 +86,9 @@ churn-platform/
 <img width="920" height="650" alt="image" src="https://github.com/user-attachments/assets/d1c70956-a62d-466c-b14b-d4b2489f310c" />
 
 
-            
-            |   Docker Deployment |
-            +----------------------+
+<img width="1337" height="637" alt="image" src="https://github.com/user-attachments/assets/c86bf3be-5163-4c70-a827-303532f1922c" />
+
+
+<img width="1202" height="623" alt="image" src="https://github.com/user-attachments/assets/8d8aec71-8065-4dcb-9712-d1a8b5c08a47" />
+
+
