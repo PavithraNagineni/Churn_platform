@@ -1,0 +1,87 @@
+# 🔥 Churn Prediction Platform (Deep Learning + FastAPI)
+
+A production-ready customer churn prediction system built using **PyTorch**, **FastAPI**, and **Docker**.  
+This project includes preprocessing, deep learning model training, evaluation, and a real-time inference API.
+
+---
+
+## 🚀 Features
+- Deep Learning model (PyTorch) for churn prediction  
+- Modular preprocessing pipeline  
+- FastAPI inference microservice  
+- Dockerized deployment  
+- Clean, industry-ready folder structure  
+- Supports real-time predictions  
+
+---
+
+## 🏗 Project Architecture
+
+           +----------------------+
+           |     Raw Dataset      |
+           +----------+-----------+
+                      |
+                      v
+    +---------------------------------------+
+    |      Preprocessing Pipeline           |
+    |  (Scaling, Cleaning, Feature Prep)    |
+    +------------------+--------------------+
+                       |
+                       v
+     +-------------------------------------+
+     |      PyTorch ChurnNet Model         |
+     | (Training, Validation, Evaluation)  |
+     +------------------+------------------+
+                       |
+                       v
+            +----------------------+
+            |   Saved Model (.pt) |
+            +----------+-----------+
+                       |
+                       v
+    +--------------------------------------+
+    |      FastAPI Inference Microservice  |
+    |  (/predict endpoint returns churn)   |
+    +------------------+-------------------+
+                       |
+                       v
+            +----------------------+
+
+
+## 📁 Folder Structure
+churn-platform/
+
+│── data/
+
+│── models/
+
+│── src/
+
+│ ├── config.py
+
+│ ├── data_preprocessing.py
+
+│ ├── model.py
+
+│ ├── train.py
+
+│ └── evaluate.py
+
+│── service/
+
+│ ├── app.py
+
+│ └── schemas.py
+
+│── requirements.txt
+
+│── Dockerfile
+
+│── README.md
+
+<img width="920" height="650" alt="image" src="https://github.com/user-attachments/assets/d1c70956-a62d-466c-b14b-d4b2489f310c" />
+
+
+            
+            |   Docker Deployment |
+            +----------------------+
