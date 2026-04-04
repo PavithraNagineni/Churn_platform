@@ -1,94 +1,107 @@
-# 🔥 Churn Prediction Platform (Deep Learning + FastAPI)
+# Churn Prediction Platform
 
-A production-ready customer churn prediction system built using **PyTorch**, **FastAPI**, and **Docker**.  
-This project includes preprocessing, deep learning model training, evaluation, and a real-time inference API.
+Deep learning churn prediction system with a FastAPI microservice for real-time inference.
 
----
+## Architecture
+```
+data/ → preprocessing.py → model.py → train.py → artifacts/
+                                                       ↓
+                                               main.py (FastAPI)
+                                                       ↓
+                                             POST /predict (JSON)
+```
 
-## 🚀 Features
-- Deep Learning model (PyTorch) for churn prediction  
-- Modular preprocessing pipeline  
-- FastAPI inference microservice  
-- Dockerized deployment  
-- Clean, industry-ready folder structure  
-- Supports real-time predictions  
+## Project Structure
+```
+churn_prediction/
+├── model.py          # ChurnNet (PyTorch MLP)
+├── preprocessing.py  # Feature engineering & encoding pipeline
+├── train.py          # Training loop with MLflow tracking + early stopping
+├── main.py           # FastAPI microservice (single + batch predict)
+├── Dockerfile        # Container definition
+└── requirements.txt
+```
 
----
+## Quick Start
 
-## 🏗 Project Architecture
+### 1. Install dependencies
+```bash
+pip install -r requirements.txt
+```
 
-           +----------------------+
-           |     Raw Dataset      |
-           +----------+-----------+
-                      |
-                      v
-    +---------------------------------------+
-    |      Preprocessing Pipeline           |
-    |  (Scaling, Cleaning, Feature Prep)    |
-    +------------------+--------------------+
-                       |
-                       v
-     +-------------------------------------+
-     |      PyTorch ChurnNet Model         |
-     | (Training, Validation, Evaluation)  |
-     +------------------+------------------+
-                       |
-                       v
-            +----------------------+
-            |   Saved Model (.pt) |
-            +----------+-----------+
-                       |
-                       v
-    +--------------------------------------+
-    |      FastAPI Inference Microservice  |
-    |  (/predict endpoint returns churn)   |
-    +------------------+-------------------+
-                       |
-                       v
-            +----------------------+
+### 2. Prepare data
+Download Telco Customer Churn dataset from Kaggle and place at:
+```
+data/WA_Fn-UseC_-Telco-Customer-Churn.csv
+```
 
-            |   Docker Deployment |
-            +----------------------+
+### 3. Train model
+```bash
+python train.py
+```
+Artifacts saved to `artifacts/model/` and `artifacts/preprocessor/`
+MLflow UI: `mlflow ui` → http://localhost:5000
 
-            
+### 4. Run API server
+```bash
+uvicorn main:app --host 0.0.0.0 --port 8000
+```
 
-## 📁 Folder Structure
-churn-platform/
+### 5. Run with Docker
+```bash
+docker build -t churn-api .
+docker run -p 8000:8000 churn-api
+```
 
-│── data/
+## API Endpoints
 
-│── models/
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | /health | Health check |
+| POST | /predict | Single customer prediction |
+| POST | /predict/batch | Batch predictions |
+| GET | /model/info | Model metadata |
 
-│── src/
+### Example Request
+```bash
+curl -X POST http://localhost:8000/predict \
+  -H "Content-Type: application/json" \
+  -d '{
+    "gender": "Male",
+    "SeniorCitizen": 0,
+    "Partner": "Yes",
+    "Dependents": "No",
+    "tenure": 12,
+    "PhoneService": "Yes",
+    "MultipleLines": "No",
+    "InternetService": "Fiber optic",
+    "OnlineSecurity": "No",
+    "OnlineBackup": "Yes",
+    "DeviceProtection": "No",
+    "TechSupport": "No",
+    "StreamingTV": "No",
+    "StreamingMovies": "No",
+    "Contract": "Month-to-month",
+    "PaperlessBilling": "Yes",
+    "PaymentMethod": "Electronic check",
+    "MonthlyCharges": 70.35,
+    "TotalCharges": 844.2
+  }'
+```
 
-│ ├── config.py
+### Example Response
+```json
+{
+  "churn_probability": 0.7821,
+  "churn_prediction": true,
+  "risk_level": "HIGH",
+  "confidence": 0.7821
+}
+```
 
-│ ├── data_preprocessing.py
-
-│ ├── model.py
-
-│ ├── train.py
-
-│ └── evaluate.py
-
-│── service/
-
-│ ├── app.py
-
-│ └── schemas.py
-
-│── requirements.txt
-
-│── Dockerfile
-
-│── README.md
-
-<img width="920" height="650" alt="image" src="https://github.com/user-attachments/assets/d1c70956-a62d-466c-b14b-d4b2489f310c" />
-
-
-<img width="1337" height="637" alt="image" src="https://github.com/user-attachments/assets/c86bf3be-5163-4c70-a827-303532f1922c" />
-
-
-<img width="1202" height="623" alt="image" src="https://github.com/user-attachments/assets/8d8aec71-8065-4dcb-9712-d1a8b5c08a47" />
-
-
+## Model Details
+- **Architecture**: 3-layer MLP (256 → 128 → 64) with BatchNorm + Dropout
+- **Loss**: BCEWithLogitsLoss with class imbalance weighting
+- **Optimizer**: AdamW with ReduceLROnPlateau scheduler
+- **Early stopping**: Patience=8 on validation AUC
+- **Tracking**: MLflow for experiment logging
