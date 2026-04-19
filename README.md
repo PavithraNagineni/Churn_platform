@@ -105,3 +105,6 @@ curl -X POST http://localhost:8000/predict \
 - **Optimizer**: AdamW with ReduceLROnPlateau scheduler
 - **Early stopping**: Patience=8 on validation AUC
 - **Tracking**: MLflow for experiment logging
+
+## Author  
+    "Pavithra Nagineni"
